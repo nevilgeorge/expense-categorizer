@@ -7,6 +7,9 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import pdfplumber
 from transaction_extractor import TransactionExtractor
+from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from typing import List, Dict, Any
 
 # Load environment variables
 load_dotenv()
@@ -20,6 +23,19 @@ logger = logging.getLogger(__name__)
 
 # Initialize OpenAI client
 client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+
+# Get the frontend URL from environment variable, default to localhost for development
+FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:5173')
+
+# Configure CORS
+app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[FRONTEND_URL],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 EXPENSE_CATEGORIZATION_PROMPT = """
 You are an expert at analyzing credit card statements and categorizing expenses. 

@@ -17,6 +17,7 @@ import { Upload as UploadIcon } from '@mui/icons-material';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 import axios from 'axios';
 import type { AnalysisResult, ApiError } from '../types';
+import { config } from '../config';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D', '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4'];
 
@@ -48,11 +49,15 @@ export const StatementAnalyzer = () => {
         formData.append('file', file);
 
         try {
-            const response = await axios.post<AnalysisResult>('http://127.0.0.1:8000/analyze-statement', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
+            const response = await axios.post<AnalysisResult>(
+                `${config.apiUrl}/analyze-statement`, 
+                formData, 
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                }
+            );
             setResult(response.data);
         } catch (err) {
             if (axios.isAxiosError(err)) {
