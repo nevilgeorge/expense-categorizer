@@ -1,0 +1,1 @@
+ * No check whether OpenAI API returns the same amount of transactions as the bank statement.
