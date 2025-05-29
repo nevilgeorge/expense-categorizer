@@ -49,8 +49,9 @@ export const StatementAnalyzer = () => {
         formData.append('file', file);
 
         try {
+            const apiUrl = new URL('/analyze-statement', config.apiUrl).toString();
             const response = await axios.post<AnalysisResult>(
-                `${config.apiUrl}/analyze-statement`, 
+                apiUrl,
                 formData, 
                 {
                     headers: {

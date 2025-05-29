@@ -6,6 +6,7 @@ from pathlib import Path
 import logging
 from transaction_extractor import TransactionExtractor
 from main import read_pdf, analyze_with_openai
+import os
 
 # Set up logging
 logging.basicConfig(
@@ -13,6 +14,9 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
+# Get the frontend URL from environment variable, default to localhost for development
+FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:5173')
 
 app = FastAPI(
     title="Expense Categorizer API",
@@ -24,6 +28,13 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],  # Vite's default port
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[FRONTEND_URL],  # Production URL
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
