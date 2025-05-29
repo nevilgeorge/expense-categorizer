@@ -37,7 +37,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",  # Local development
-        FRONTEND_URL,             # Production URL from env
+        "https://expense-categorizer-2r89.vercel.app",  # Your frontend domain
         "https://*.vercel.app"    # All Vercel deployments
     ],
     allow_credentials=True,
