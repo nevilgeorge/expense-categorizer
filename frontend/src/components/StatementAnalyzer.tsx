@@ -92,13 +92,6 @@ export const StatementAnalyzer = () => {
         backgroundColor: '#FFE2C3',
     };
 
-    const tableStyle = {
-        mb: 4,
-        '&:last-child': {
-            mb: 0
-        }
-    };
-
     return (
         <Box 
             sx={{ 
