@@ -71,11 +71,27 @@ export const StatementAnalyzer = () => {
         value,
     })) : [];
 
+    const transactionsByCategory = result ? result.transactions.reduce((acc, transaction) => {
+        const category = transaction.category;
+        if (!acc[category]) {
+            acc[category] = [];
+        }
+        acc[category].push(transaction);
+        return acc;
+    }, {} as Record<string, typeof result.transactions>) : {};
+
     const paperStyle = {
         p: 3,
         mb: 3,
         width: '100%',
         backgroundColor: '#FFE2C3',
+    };
+
+    const tableStyle = {
+        mb: 4,
+        '&:last-child': {
+            mb: 0
+        }
     };
 
     return (
@@ -174,37 +190,55 @@ export const StatementAnalyzer = () => {
                             </Box>
                         </Paper>
 
-                        <Paper sx={{ ...paperStyle, mb: 0 }}>
-                            <Typography variant="h6" gutterBottom>
-                                Transactions
-                            </Typography>
-                            <TableContainer>
-                                <Table>
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell>Date</TableCell>
-                                            <TableCell>Description</TableCell>
-                                            <TableCell>Category</TableCell>
-                                            <TableCell align="right">Amount</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {result.transactions.map((transaction, index) => (
-                                            <TableRow key={index}>
-                                                <TableCell>
-                                                    {new Date(transaction.date).toLocaleDateString()}
-                                                </TableCell>
-                                                <TableCell>{transaction.description}</TableCell>
-                                                <TableCell>{transaction.category}</TableCell>
-                                                <TableCell align="right">
-                                                    ${transaction.amount.toFixed(2)}
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                        </Paper>
+                        <Box sx={{ 
+                            display: 'flex', 
+                            flexWrap: 'wrap', 
+                            gap: 3,
+                            width: '100%'
+                        }}>
+                            {Object.entries(transactionsByCategory).map(([category, transactions]) => (
+                                <Paper 
+                                    key={category} 
+                                    sx={{ 
+                                        ...paperStyle, 
+                                        flex: '1 1 400px',
+                                        minWidth: 0,
+                                        mb: 0
+                                    }}
+                                >
+                                    <Typography variant="h6" gutterBottom sx={{ color: 'text.primary' }}>
+                                        {category}
+                                    </Typography>
+                                    <Typography variant="subtitle2" sx={{ mb: 2, color: 'text.secondary' }}>
+                                        Total: ${transactions.reduce((sum, t) => sum + t.amount, 0).toFixed(2)}
+                                    </Typography>
+                                    <TableContainer>
+                                        <Table size="small">
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableCell>Date</TableCell>
+                                                    <TableCell>Description</TableCell>
+                                                    <TableCell align="right">Amount</TableCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {transactions.map((transaction, index) => (
+                                                    <TableRow key={index}>
+                                                        <TableCell>
+                                                            {new Date(transaction.date).toLocaleDateString()}
+                                                        </TableCell>
+                                                        <TableCell>{transaction.description}</TableCell>
+                                                        <TableCell align="right">
+                                                            ${transaction.amount.toFixed(2)}
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                </Paper>
+                            ))}
+                        </Box>
                     </>
                 )}
             </Box>
